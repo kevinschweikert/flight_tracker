@@ -12,19 +12,19 @@ defmodule FlightTracker.CraftProjector do
   @impl GenServer
   def init(_) do
     FlightTracker.subscribe()
-    {:ok, []}
+    {:ok, %{}}
   end
 
   @impl GenServer
-  def handle_call(:get_crafts, _from, state) do
-    stats = Enum.frequencies(state)
-    {:reply, stats, state}
+  def handle_call(:get_crafts, _from, stats) do
+    {:reply, stats, stats}
   end
 
   @impl GenServer
-  def handle_info({:flight_spotted, flight_data}, state) do
-    state = [flight_data["desc"] || "unknown" | state]
-    {:noreply, state}
+  def handle_info({:flight_spotted, flight_data}, stats) do
+    desc = flight_data["desc"] || "UNKNOWN"
+    stats = Map.update(stats, desc, 0, fn old_val -> old_val + 1 end)
+    {:noreply, stats}
   end
 
   def handle_info(_, state) do
