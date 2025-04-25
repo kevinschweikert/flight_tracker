@@ -43,9 +43,9 @@ defmodule FlightTracker do
         end
       end
 
-    for {hex, _} <- crafts do
+    for {hex, flight_data} <- crafts do
       if hex not in identifiers do
-        {:flight_left, hex} |> publish()
+        {:flight_left, flight_data} |> publish()
       end
     end
 
@@ -56,10 +56,7 @@ defmodule FlightTracker do
     {:reply,
      Eventstore.events()
      |> Enum.take(count)
-     |> Enum.map(fn
-       {:flight_left = type, hex} -> {type, hex}
-       {type, data} -> {type, data["hex"]}
-     end), state}
+     |> Enum.map(fn {type, flight_data} -> {type, flight_data["hex"]} end), state}
   end
 
   @impl GenServer
@@ -76,8 +73,8 @@ defmodule FlightTracker do
     Map.put(crafts, flight_data["hex"], flight_data)
   end
 
-  defp apply_event({:flight_left, hex}, crafts) do
-    Map.delete(crafts, hex)
+  defp apply_event({:flight_left, flight_data}, crafts) do
+    Map.delete(crafts, flight_data["hex"])
   end
 
   def subscribe(topic \\ "events") do
