@@ -44,7 +44,11 @@ Validates commands against business rules and appends events to the event stream
 
 ## Event Stream
 
-The data storage for all events
+All events belonging to a specific aggregate
+
+## Event Store
+
+The data storage for all events.
 
 ---
 
