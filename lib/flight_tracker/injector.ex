@@ -7,7 +7,7 @@ defmodule FlightTracker.Injector do
 
   @impl GenServer
   def init(_) do
-    schedule_fetch()
+    schedule_fetch(1)
     {:ok, []}
   end
 
@@ -19,16 +19,18 @@ defmodule FlightTracker.Injector do
   end
 
   def get_flights() do
-    Req.get!("https://opendata.adsb.fi/api/v2/lat/53.551086/lon/9.993682/dist/25").body[
-      "aircraft"
-    ]
-
-    # Req.get!("https://opendata.adsb.fi/api/v2/lat/40.730610/lon/-73.935242/dist/5").body[
-    #   "aircraft"
-    # ]
+    req()
+    |> Req.get!()
+    |> Map.get(:body)
+    |> Map.get("aircraft")
   end
 
-  defp schedule_fetch() do
-    Process.send_after(self(), :fetch, to_timeout(second: 10))
+  defp req() do
+    Req.new(url: "https://opendata.adsb.fi/api/v2/lat/53.551086/lon/9.993682/dist/25")
+    |> CurlReq.Plugin.attach()
+  end
+
+  defp schedule_fetch(seconds \\ 10) do
+    Process.send_after(self(), :fetch, to_timeout(second: seconds))
   end
 end
