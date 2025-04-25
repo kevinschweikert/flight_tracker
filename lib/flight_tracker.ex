@@ -32,14 +32,16 @@ defmodule FlightTracker do
   def handle_call({:cmd, :ingest_snapshot, airplanes}, _from, %{crafts: crafts} = state) do
     identifiers =
       for flight_data <- airplanes do
-        case Map.get(crafts, flight_data["hex"]) do
+        identifier = flight_data["hex"]
+
+        case Map.get(crafts, identifier) do
           nil ->
             {:flight_spotted, flight_data} |> publish()
-            flight_data["hex"]
+            identifier
 
           _ ->
             {:flight_updated, flight_data} |> publish()
-            flight_data["hex"]
+            identifier
         end
       end
 
