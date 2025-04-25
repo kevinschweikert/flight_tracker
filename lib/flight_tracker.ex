@@ -55,7 +55,6 @@ defmodule FlightTracker do
   def handle_call({:get_last_events, count}, _from, state) do
     {:reply,
      Eventstore.events()
-     |> Enum.reverse()
      |> Enum.take(count)
      |> Enum.map(fn
        {:flight_left = type, hex} -> {type, hex}
