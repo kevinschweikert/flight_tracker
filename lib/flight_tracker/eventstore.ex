@@ -11,10 +11,6 @@ defmodule FlightTracker.Eventstore do
     GenServer.call(__MODULE__, :get_events)
   end
 
-  def replay() do
-    GenServer.call(__MODULE__, :replay_events)
-  end
-
   @impl GenServer
   def init(_) do
     events =
