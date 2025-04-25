@@ -23,7 +23,7 @@ defmodule FlightTracker.CraftProjector do
   @impl GenServer
   def handle_info({:flight_spotted, flight_data}, stats) do
     desc = flight_data["desc"] || "UNKNOWN"
-    stats = Map.update(stats, desc, 0, fn old_val -> old_val + 1 end)
+    stats = Map.update(stats, desc, 1, fn old_val -> old_val + 1 end)
     {:noreply, stats}
   end
 
