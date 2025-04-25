@@ -45,6 +45,8 @@ defmodule FlightTracker do
         end
       end
 
+    # TODO: improve tracking to allow for aircrafts not available for a short time
+    # NOTE: could add second injector/command to trigger cleanup interval based on last seen timestamp
     for {hex, flight_data} <- crafts do
       if hex not in identifiers do
         {:flight_left, flight_data} |> publish()
