@@ -168,7 +168,7 @@ Code
 # Link to repo
 
 ```
-~~~qrencode -t ansiutf8 "https://github.com/kevinschweikert/flight_tracker"
+~~~qrencode -t ansiutf8 https://github.com/kevinschweikert/flight_tracker
 QR Code
 ~~~
 ```
