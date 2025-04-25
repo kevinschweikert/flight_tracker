@@ -23,9 +23,12 @@ defmodule FlightTracker.Eventstore do
         _ -> []
       end
 
-    for event <- events do
+    events
+    # events are stored in latest first but we want to replay the history forward
+    |> Enum.reverse()
+    |> Enum.each(fn event ->
       FlightTracker.publish(event)
-    end
+    end)
 
     FlightTracker.subscribe()
     {:ok, events}
@@ -38,7 +41,7 @@ defmodule FlightTracker.Eventstore do
 
   @impl GenServer
   def handle_info(event, events) do
-    events = events ++ [event]
+    events = [event | events]
     File.write!(@eventstore, :erlang.term_to_binary(events))
     {:noreply, events}
   end
